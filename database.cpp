@@ -64,7 +64,7 @@ void Database::Print(ostream& os) const
 }
 
 //---------------------------------------------------------------------------//
-vector<string> Database::FindIf(PredicateType predicate) const
+vector<string> Database::FindIf(const PredicateType& predicate) const
 {
     vector<string> result;
 
@@ -86,7 +86,7 @@ vector<string> Database::FindIf(PredicateType predicate) const
 }
 
 //---------------------------------------------------------------------------//
-int Database::RemoveIf(PredicateType predicate)
+int Database::RemoveIf(const PredicateType& predicate)
 {
     int removedTotal = 0;
     vector<Date> daysToRemove;

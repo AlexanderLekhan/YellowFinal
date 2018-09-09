@@ -21,8 +21,8 @@ public:
     void Add(const Date& date, const std::string& event);
     std::string Last(const Date& date) const;
     void Print(std::ostream& os) const;
-    std::vector<std::string> FindIf(PredicateType predicate) const;
-    int RemoveIf(PredicateType predicate);
+    std::vector<std::string> FindIf(const PredicateType& predicate) const;
+    int RemoveIf(const PredicateType& predicate);
 
 private:
 
