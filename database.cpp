@@ -101,26 +101,21 @@ int Database::RemoveIf(const PredicateType& predicate)
         vector<string> eventsToRemove;
 
         auto removedIt =
-            remove_if(
+            stable_partition(
                 dayEventList.begin(),
                 dayEventList.end(),
-                [&predicate, &date, &eventsToRemove](StringSet::const_iterator event)
+                [&predicate, &date](StringSet::const_iterator event)
                 {
-                    if (predicate(date, *event))
-                    {
-                        eventsToRemove.push_back(*event);
-                        return true;
-                    }
-                    return false;
+                    return !predicate(date, *event);
                 });
 
         removedTotal += distance(removedIt, dayEventList.end());
 
         if (removedIt != dayEventList.begin())
         {
-            for (const string& event : eventsToRemove)
+            for (auto eventIt = removedIt; eventIt != dayEventList.end(); ++eventIt)
             {
-                dayEventSet.erase(event);
+                dayEventSet.erase(*eventIt);
             }
             dayEventList.erase(removedIt, dayEventList.end());
         }
