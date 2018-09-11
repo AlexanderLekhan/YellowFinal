@@ -25,6 +25,8 @@ private:
     int m_year = 0;
     int m_month = 1;
     int m_day = 1;
+
+    friend bool operator<(const Date& lhs, const Date& rhs);
 };
 
 bool operator<(const Date& lhs, const Date& rhs);
