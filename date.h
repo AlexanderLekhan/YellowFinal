@@ -27,6 +27,7 @@ private:
     int m_day = 1;
 
     friend bool operator<(const Date& lhs, const Date& rhs);
+    friend bool operator==(const Date& lhs, const Date& rhs);
 };
 
 bool operator<(const Date& lhs, const Date& rhs);

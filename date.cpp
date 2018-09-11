@@ -62,6 +62,11 @@ bool operator<(const Date& lhs, const Date& rhs)
     */
 }
 
+bool operator==(const Date& lhs, const Date& rhs)
+{
+    return tie(lhs.m_year, lhs.m_month, lhs.m_day)
+        == tie(rhs.m_year, rhs.m_month, rhs.m_day);
+}
 //---------------------------------------------------------------------------//
 ostream& operator<<(ostream& out, const Date& d)
 {

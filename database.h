@@ -15,16 +15,13 @@ using PredicateType =
         std::function<bool(const Date& date, const std::string& event)>;
 
 //===========================================================================//
-class Database
+class Entry
 {
 public:
-    void Add(const Date& date, const std::string& event);
-    std::string Last(const Date& date) const;
-    void Print(std::ostream& os) const;
-    std::vector<std::string> FindIf(const PredicateType& predicate) const;
-    int RemoveIf(const PredicateType& predicate);
+    Date date;
+    std::string event;
 
-private:
+    std::string toString() const;
 
     static void PrintEvent(std::ostream& os,
                            const Date& date,
@@ -32,6 +29,22 @@ private:
     {
         os << date << ' ' << event;
     }
+};
+
+std::ostream& operator << (std::ostream& os, const Entry& e);
+bool operator == (const Entry& lhs, const Entry& rhs);
+
+//===========================================================================//
+class Database
+{
+public:
+    void Add(const Date& date, const std::string& event);
+    Entry Last(const Date &date) const;
+    void Print(std::ostream& os) const;
+    std::vector<Entry> FindIf(const PredicateType& predicate) const;
+    int RemoveIf(const PredicateType& predicate);
+
+private:
 
     using StringSet = std::set<std::string>;
 

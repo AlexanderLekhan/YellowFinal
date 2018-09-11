@@ -7,6 +7,27 @@
 using namespace std;
 
 //---------------------------------------------------------------------------//
+string Entry::toString() const
+{
+    ostringstream os;
+    Entry::PrintEvent(os, date, event);
+    return os.str();
+}
+
+//---------------------------------------------------------------------------//
+ostream& operator << (ostream& os, const Entry& e)
+{
+    Entry::PrintEvent(os, e.date, e.event);
+    return os;
+}
+
+//---------------------------------------------------------------------------//
+bool operator == (const Entry& lhs, const Entry& rhs)
+{
+    return tie(lhs.date, lhs.event) == tie(rhs.date, rhs.event);
+}
+
+//---------------------------------------------------------------------------//
 void Database::Add(const Date& date, const string& event)
 {
     if (event.empty())
@@ -21,21 +42,9 @@ void Database::Add(const Date& date, const string& event)
 }
 
 //---------------------------------------------------------------------------//
-string Database::Last(const Date& date) const
+Entry Database::Last(const Date& date) const
 {
-    auto it = m_storage.end();
-
-    if (date.GetYear() == 0
-        && date.GetMonth() == 0
-        && date.GetDay() == 0
-        && m_storage.size() > 0)
-    {
-        throw logic_error("L");
-    }
-    else
-    {
-        it = m_storage.upper_bound(date);
-    }
+    auto it = m_storage.upper_bound(date);
 
     if (it == m_storage.begin())
     {
@@ -43,9 +52,7 @@ string Database::Last(const Date& date) const
     }
 
     --it;
-    ostringstream os;
-    PrintEvent(os, it->first, *it->second.m_list.back());
-    return os.str();
+    return {it->first, *it->second.m_list.back()};
 }
 
 //---------------------------------------------------------------------------//
@@ -57,16 +64,16 @@ void Database::Print(ostream& os) const
 
         for (const auto& event : day.second.m_list)
         {
-            PrintEvent(os, day.first, *event);
+            Entry::PrintEvent(os, day.first, *event);
             os << endl;
         }
     }
 }
 
 //---------------------------------------------------------------------------//
-vector<string> Database::FindIf(const PredicateType& predicate) const
+std::vector<Entry> Database::FindIf(const PredicateType& predicate) const
 {
-    vector<string> result;
+    vector<Entry> result;
 
     for (const auto& day: m_storage)
     {
@@ -76,9 +83,7 @@ vector<string> Database::FindIf(const PredicateType& predicate) const
         {
             if (predicate(day.first, *event))
             {
-                ostringstream os;
-                PrintEvent(os, day.first, *event);
-                result.push_back(os.str());
+                result.push_back({day.first, *event});
             }
         }
     }

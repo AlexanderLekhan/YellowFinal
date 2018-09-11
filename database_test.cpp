@@ -4,6 +4,17 @@
 
 using namespace std;
 
+vector<string> entries_to_strings(const vector<Entry>& entries)
+{
+    vector<string> res;
+
+    for (const Entry& it : entries)
+    {
+        res.push_back(it.toString());
+    }
+    return res;
+}
+
 void TestFind(Database& db,
               const string& condition,
               const vector<string>& test)
@@ -13,7 +24,7 @@ void TestFind(Database& db,
     auto predicate = [conditionFind](const Date& date, const string& event) {
       return conditionFind->Evaluate(date, event);
     };
-    ASSERT_EQ(db.FindIf(predicate), test);
+    ASSERT_EQ(entries_to_strings(db.FindIf(predicate)), test);
 }
 
 void TestRemove(Database& db,
@@ -34,7 +45,7 @@ void TestRemove(Database& db,
     auto predicateFind = [conditionFind](const Date& date, const string& event) {
       return conditionFind->Evaluate(date, event);
     };
-    ASSERT_EQ(db.FindIf(predicateFind), test);
+    ASSERT_EQ(entries_to_strings(db.FindIf(predicateFind)), test);
 }
 
 //---------------------------------------------------------------------------//
@@ -46,7 +57,7 @@ void TestDatabase()
     // Empty
     try
     {
-        ASSERT_EQ(db.Last({1, 1, 1}), "No entries");
+        ASSERT_EQ(db.Last({1, 1, 1}).toString(), "No entries");
     }
     catch (const invalid_argument& e)
     {
@@ -59,58 +70,58 @@ void TestDatabase()
     // Before all
     try
     {
-        ASSERT_EQ(db.Last({1, 1, 1}), "No entries");
+        ASSERT_EQ(db.Last({1, 1, 1}).toString(), "No entries");
     }
     catch (const invalid_argument& e)
     {
         ASSERT_EQ(e.what(), string("No entries"));
     }
     // Exact
-    ASSERT_EQ(db.Last({2, 2, 2}), "0002-02-02 k");
+    ASSERT_EQ(db.Last({2, 2, 2}).toString(), "0002-02-02 k");
     // After
-    ASSERT_EQ(db.Last({2, 2, 3}), "0002-02-02 k");
-    ASSERT_EQ(db.Last({2, 3, 3}), "0002-02-02 k");
-    ASSERT_EQ(db.Last({3, 3, 3}), "0002-02-02 k");
+    ASSERT_EQ(db.Last({2, 2, 3}).toString(), "0002-02-02 k");
+    ASSERT_EQ(db.Last({2, 3, 3}).toString(), "0002-02-02 k");
+    ASSERT_EQ(db.Last({3, 3, 3}).toString(), "0002-02-02 k");
 
     // Order of 2 entries in 1 date
     db.Add({2, 2, 2}, "e");
     // Exact
-    ASSERT_EQ(db.Last({2, 2, 2}), "0002-02-02 e");
+    ASSERT_EQ(db.Last({2, 2, 2}).toString(), "0002-02-02 e");
     // After
-    ASSERT_EQ(db.Last({2, 2, 3}), "0002-02-02 e");
-    ASSERT_EQ(db.Last({2, 3, 3}), "0002-02-02 e");
-    ASSERT_EQ(db.Last({3, 3, 3}), "0002-02-02 e");
+    ASSERT_EQ(db.Last({2, 2, 3}).toString(), "0002-02-02 e");
+    ASSERT_EQ(db.Last({2, 3, 3}).toString(), "0002-02-02 e");
+    ASSERT_EQ(db.Last({3, 3, 3}).toString(), "0002-02-02 e");
 
     // 2 dates
     db.Add({3, 3, 3}, "q");
     // Exact first
-    ASSERT_EQ(db.Last({2, 2, 2}), "0002-02-02 e");
+    ASSERT_EQ(db.Last({2, 2, 2}).toString(), "0002-02-02 e");
     // After first
-    ASSERT_EQ(db.Last({2, 2, 3}), "0002-02-02 e");
-    ASSERT_EQ(db.Last({2, 3, 3}), "0002-02-02 e");
+    ASSERT_EQ(db.Last({2, 2, 3}).toString(), "0002-02-02 e");
+    ASSERT_EQ(db.Last({2, 3, 3}).toString(), "0002-02-02 e");
     // Exact second
-    ASSERT_EQ(db.Last({3, 3, 3}), "0003-03-03 q");
+    ASSERT_EQ(db.Last({3, 3, 3}).toString(), "0003-03-03 q");
     // After second
-    ASSERT_EQ(db.Last({3, 3, 4}), "0003-03-03 q");
-    ASSERT_EQ(db.Last({3, 4, 4}), "0003-03-03 q");
+    ASSERT_EQ(db.Last({3, 3, 4}).toString(), "0003-03-03 q");
+    ASSERT_EQ(db.Last({3, 4, 4}).toString(), "0003-03-03 q");
 
     // 3 dates
     db.Add({4, 4, 4}, "i");
     // Exact first
-    ASSERT_EQ(db.Last({2, 2, 2}), "0002-02-02 e");
+    ASSERT_EQ(db.Last({2, 2, 2}).toString(), "0002-02-02 e");
     // After first
-    ASSERT_EQ(db.Last({2, 2, 3}), "0002-02-02 e");
-    ASSERT_EQ(db.Last({2, 3, 3}), "0002-02-02 e");
+    ASSERT_EQ(db.Last({2, 2, 3}).toString(), "0002-02-02 e");
+    ASSERT_EQ(db.Last({2, 3, 3}).toString(), "0002-02-02 e");
     // Exact second
-    ASSERT_EQ(db.Last({3, 3, 3}), "0003-03-03 q");
+    ASSERT_EQ(db.Last({3, 3, 3}).toString(), "0003-03-03 q");
     // After second
-    ASSERT_EQ(db.Last({3, 3, 4}), "0003-03-03 q");
-    ASSERT_EQ(db.Last({3, 4, 4}), "0003-03-03 q");
+    ASSERT_EQ(db.Last({3, 3, 4}).toString(), "0003-03-03 q");
+    ASSERT_EQ(db.Last({3, 4, 4}).toString(), "0003-03-03 q");
     // Exact third
-    ASSERT_EQ(db.Last({4, 4, 4}), "0004-04-04 i");
+    ASSERT_EQ(db.Last({4, 4, 4}).toString(), "0004-04-04 i");
     // After third
-    ASSERT_EQ(db.Last({4, 4, 5}), "0004-04-04 i");
-    ASSERT_EQ(db.Last({4, 5, 5}), "0004-04-04 i");
+    ASSERT_EQ(db.Last({4, 4, 5}).toString(), "0004-04-04 i");
+    ASSERT_EQ(db.Last({4, 5, 5}).toString(), "0004-04-04 i");
 
 
     /////////////////// Add existing ///////////////////////
