@@ -3,7 +3,7 @@
 using namespace std;
 
 //===========================================================================//
-bool EmptyNode::Evaluate(const Date& date, const string& event)
+bool EmptyNode::Evaluate(const Date& /*date*/, const string& /*event*/) const
 {
     return true;
 }
@@ -18,7 +18,7 @@ LogicalOperationNode::LogicalOperationNode(const LogicalOperation op,
 
 //---------------------------------------------------------------------------//
 bool LogicalOperationNode::Evaluate(const Date& date,
-                                    const string& event)
+                                    const string& event) const
 {
     switch (m_op)
     {
@@ -40,7 +40,7 @@ DateComparisonNode::DateComparisonNode(const Comparison cmp,
 
 //---------------------------------------------------------------------------//
 bool DateComparisonNode::Evaluate(const Date& date,
-                                  const string& /*event*/)
+                                  const string& /*event*/) const
 {
     return Compare(date);
 }
@@ -54,7 +54,7 @@ EventComparisonNode::EventComparisonNode(const Comparison cmp,
 
 //---------------------------------------------------------------------------//
 bool EventComparisonNode::Evaluate(const Date& /*date*/,
-                                   const string& event)
+                                   const string& event) const
 {
     return Compare(event);
 }

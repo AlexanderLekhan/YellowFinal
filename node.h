@@ -9,14 +9,14 @@
 class Node
 {
 public:
-    virtual bool Evaluate(const Date& date, const std::string& event) = 0;
+    virtual bool Evaluate(const Date& date, const std::string& event) const = 0;
 };
 
 //===========================================================================//
 class EmptyNode : public Node
 {
 public:
-    virtual bool Evaluate(const Date& date, const std::string& event) override;
+    virtual bool Evaluate(const Date& date, const std::string& event) const override;
 };
 
 //===========================================================================//
@@ -33,7 +33,7 @@ public:
     LogicalOperationNode(const LogicalOperation op,
                          std::shared_ptr<Node> left,
                          std::shared_ptr<Node> right);
-    virtual bool Evaluate(const Date& date, const std::string& event) override;
+    virtual bool Evaluate(const Date& date, const std::string& event) const override;
 
 private:
     LogicalOperation m_op;
@@ -60,7 +60,7 @@ public:
     ComparisonNode(const Comparison cmp, const ValueType& value);
 
 protected:
-    bool Compare(const ValueType& value);
+    bool Compare(const ValueType& value) const;
 
 private:
     Comparison m_cmp;
@@ -77,7 +77,7 @@ ComparisonNode<ValueType>::ComparisonNode(const Comparison cmp,
 
 //---------------------------------------------------------------------------//
 template <typename ValueType>
-bool ComparisonNode<ValueType>::Compare(const ValueType& value)
+bool ComparisonNode<ValueType>::Compare(const ValueType& value) const
 {
     switch (m_cmp)
     {
@@ -104,7 +104,7 @@ class DateComparisonNode : public ComparisonNode<Date>
     using Base = ComparisonNode<Date>;
 public:
     DateComparisonNode(const Comparison cmp, const Date& date);
-    virtual bool Evaluate(const Date& date, const std::string& event) override;
+    virtual bool Evaluate(const Date& date, const std::string& event) const override;
 };
 
 //===========================================================================//
@@ -113,7 +113,7 @@ class EventComparisonNode : public ComparisonNode<std::string>
     using Base = ComparisonNode<std::string>;
 public:
     EventComparisonNode(const Comparison cmp, const std::string& event);
-    virtual bool Evaluate(const Date& date, const std::string& event) override;
+    virtual bool Evaluate(const Date& date, const std::string& event) const override;
 };
 
 #endif // NODE_H
